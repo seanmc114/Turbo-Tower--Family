@@ -305,7 +305,6 @@
 <script type="module">
   import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
-  // ===================== FAMILY DATASET (Levels 1–10) =====================
   const FAMILY = {
     1: [
       { en:"mother", answers:["madre","mamá"] },
@@ -449,7 +448,6 @@
     ]
   };
 
-  // --------- tolerant checking (accents optional; ñ treated as n) ----------
   const ACC = {"á":"a","é":"e","í":"i","ó":"o","ú":"u","ü":"u","Á":"A","É":"E","Í":"I","Ó":"O","Ú":"U","Ü":"U"};
   const stripAccents = (s)=> String(s).split("").map(ch=>ACC[ch]||ch).join("");
   const norm = (s)=> stripAccents(String(s||"").toLowerCase().trim())
@@ -457,7 +455,6 @@
     .replace(/\s+/g," ")
     .replace(/ñ/g,"n");
 
-  // --------- UI refs ----------
   const $ = (id)=> document.getElementById(id);
   const levelSel = $("levelSel");
   const btnNew = $("btnNew");
@@ -479,10 +476,9 @@
   const roundList = $("roundList");
   const typed = $("typed");
   const canvasBG = $("canvasBG");
-  const fx = $("fx");
-  const fxCtx = fx.getContext("2d");
+  const fxCanvas = $("fx");
+  const fxCtx = fxCanvas.getContext("2d");
 
-  // --------- countryside wallpaper per level ----------
   function bgCountryside(skyA, skyB, hillA, hillB){
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'>
       <defs>
@@ -526,7 +522,6 @@
     canvasBG.style.backgroundImage = LEVEL_BG[level] || LEVEL_BG[1];
   }
 
-  // --------- messaging ----------
   function setMsg(text, kind){
     msgEl.style.display = "block";
     msgEl.className = "msg" + (kind ? " "+kind : "");
@@ -538,7 +533,6 @@
     msgEl.className = "msg";
   }
 
-  // --------- state ----------
   const STATE = {
     level: 1,
     roundSize: 8,
@@ -547,17 +541,14 @@
     streak: 0,
     startedAt: 0,
     timerId: null,
-    selectedBlocks: []  // clicked blocks for current answer
+    selectedBlocks: []
   };
 
-  // --------- confetti overlay ----------
   const confetti = [];
   function burst2D(px, py, amount=70){
-    const rect = stage.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const x = px * dpr;
     const y = py * dpr;
-
     for(let i=0;i<amount;i++){
       confetti.push({
         x, y,
@@ -574,7 +565,7 @@
     }
   }
   function renderFX(){
-    fxCtx.clearRect(0,0,fx.width,fx.height);
+    fxCtx.clearRect(0,0,fxCanvas.width,fxCanvas.height);
     for(let i=confetti.length-1;i>=0;i--){
       const p = confetti[i];
       p.life -= 1;
@@ -595,7 +586,6 @@
     }
   }
 
-  // --------- helpers ----------
   function shuffle(arr){
     for(let i=arr.length-1;i>0;i--){
       const j = Math.floor(Math.random()*(i+1));
@@ -672,11 +662,11 @@
     return Math.round((base + speed) * multi);
   }
 
-  // ===================== THREE.JS TOWER =====================
+  // --------- THREE.JS ----------
   const stage = $("stage");
   const renderer = new THREE.WebGLRenderer({ canvas: stage, antialias:true, alpha:true });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-  renderer.setClearColor(0x000000, 0); // transparent so wallpaper shows
+  renderer.setClearColor(0x000000, 0);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
@@ -777,9 +767,8 @@
       }
     }
 
-    // ✅ tower shrinks through levels
-    const t = (level - 1) / 9;         // 0..1
-    const scale = 1.05 - t * 0.35;     // 1.05 → 0.70
+    const t = (level - 1) / 9;
+    const scale = 1.05 - t * 0.35;
     blockGroup.scale.set(scale, scale, scale);
     blockGroup.position.y = -0.10 * (1 - scale);
   }
@@ -797,11 +786,8 @@
   function selectBlock(b){
     if(!b || !b.userData.alive || b.userData.selected) return;
     b.userData.selected = true;
-
-    // warm highlight
     b.material?.forEach((m,i)=>{ if(m?.color && i!==2) m.color.setHex(0xfff2a8); });
     b.scale.set(1.06,1.06,1.06);
-
     STATE.selectedBlocks.push(b);
     typed.value += b.userData.letter;
     typed.focus({preventScroll:true});
@@ -821,11 +807,9 @@
     STATE.selectedBlocks = [];
   }
 
-  // ✅ explode + remove only the blocks used for a correct answer
   function explodeAndRemove(blocks){
     if(!blocks || !blocks.length) return;
 
-    // confetti burst near the top-ish
     const rect = stage.getBoundingClientRect();
     burst2D(rect.width*0.52, rect.height*0.32, 85);
 
@@ -884,7 +868,7 @@
     anim();
   }
 
-  // click to select blocks (only if not dragging)
+  // --------- FIXED INVERTED ROTATION HERE ----------
   let dragging = false, lastX = 0, lastY = 0, moved = 0;
 
   stage.addEventListener("pointerdown",(e)=>{
@@ -900,8 +884,9 @@
     lastX = e.clientX; lastY = e.clientY;
     moved += Math.abs(dx) + Math.abs(dy);
 
-    theta += dx*0.010;
-    phi   += dy*0.008;
+    // ✅ inverted fix:
+    theta -= dx*0.010;   // left/right corrected
+    phi   -= dy*0.008;   // up/down corrected
     phi = Math.max(phiMin, Math.min(phiMax, phi));
   });
   stage.addEventListener("pointerup",(e)=>{
@@ -915,7 +900,6 @@
   },{passive:false});
 
   stage.addEventListener("click",(ev)=>{
-    // if they were dragging, ignore click
     if(moved > 8) return;
     const obj = pickFromPointer(ev);
     if(!obj || !obj.userData.alive) return;
@@ -923,7 +907,6 @@
     selectBlock(obj);
   });
 
-  // --------- resizing ----------
   function resize(){
     const rect = stage.getBoundingClientRect();
     const w = Math.max(320, Math.floor(rect.width));
@@ -933,14 +916,13 @@
     camera.updateProjectionMatrix();
 
     const dpr = window.devicePixelRatio || 1;
-    fx.width = Math.floor(w*dpr);
-    fx.height = Math.floor(h*dpr);
-    fx.style.width = w+"px";
-    fx.style.height = h+"px";
+    fxCanvas.width = Math.floor(w*dpr);
+    fxCanvas.height = Math.floor(h*dpr);
+    fxCanvas.style.width = w+"px";
+    fxCanvas.style.height = h+"px";
   }
   window.addEventListener("resize", resize);
 
-  // --------- game actions ----------
   function newRound(){
     STATE.level = parseInt(levelSel.value,10);
     levelBadge.textContent = String(STATE.level);
@@ -970,7 +952,6 @@
       return;
     }
 
-    // hardened: match ANY remaining item
     const idx = STATE.remaining.findIndex(it => isCorrect(raw, it.answers));
     if(idx >= 0){
       const matched = STATE.remaining.splice(idx, 1)[0];
@@ -983,11 +964,9 @@
 
       setMsg(`✅ Correct (${matched.en}) +${pts}`, "good");
 
-      // explode blocks used for this answer
       if(STATE.selectedBlocks.length){
         explodeAndRemove([...STATE.selectedBlocks]);
       } else {
-        // typed-only correct: still confetti
         const rect = stage.getBoundingClientRect();
         burst2D(rect.width*0.52, rect.height*0.32, 70);
       }
@@ -1005,7 +984,6 @@
       return;
     }
 
-    // wrong
     STATE.streak = 0;
     streakEl.textContent = "0";
     STATE.score = Math.max(0, STATE.score - 60);
@@ -1042,7 +1020,6 @@
     setTimeout(clearMsg, 900);
   }
 
-  // --------- buttons ----------
   btnNew.addEventListener("click", newRound);
   btnScores.addEventListener("click", showScores);
   btnSubmit.addEventListener("click", submit);
@@ -1060,7 +1037,6 @@
     if(e.key==="Escape"){ typed.value=""; clearSelection(); clearMsg(); }
   });
 
-  // --------- init UI ----------
   for(let i=1;i<=10;i++){
     const opt=document.createElement("option");
     opt.value=String(i);
@@ -1071,7 +1047,6 @@
   levelBadge.textContent="1";
   applyLevelBackground(1);
 
-  // --------- animate ----------
   function animate(){
     requestAnimationFrame(animate);
     updateCamera();
@@ -1079,7 +1054,6 @@
     renderFX();
   }
 
-  // initial draw
   resize();
   buildTower(1);
   leftEl.textContent = "0";
