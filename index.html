@@ -23,10 +23,10 @@
     body{
       margin:0; font-family:var(--font); color:var(--text);
       background:
-        radial-gradient(900px 600px at 15% 12%, rgba(29,79,255,0.30), transparent 62%),
-        radial-gradient(900px 600px at 85% 20%, rgba(0,168,107,0.26), transparent 62%),
-        radial-gradient(800px 520px at 50% 95%, rgba(255,140,0,0.22), transparent 62%),
-        linear-gradient(180deg, #f2f6ff, #eaf0ff);
+        radial-gradient(900px 600px at 15% 12%, rgba(255,153,0,0.22), transparent 62%),
+        radial-gradient(900px 600px at 85% 20%, rgba(0,168,107,0.22), transparent 62%),
+        radial-gradient(900px 600px at 50% 95%, rgba(140,0,255,0.16), transparent 62%),
+        linear-gradient(180deg, #fff7e6, #eafbf3);
     }
     .app{min-height:100%; display:flex; flex-direction:column}
     header{
@@ -46,9 +46,9 @@
     main{
       flex:1;
       display:grid;
-      grid-template-columns: 1.45fr 0.75fr;
+      grid-template-columns: 1.55fr 0.65fr;
       gap:14px;
-      max-width: 1240px;
+      max-width: 1280px;
       width:100%;
       margin:0 auto;
       padding: 6px 18px 18px;
@@ -69,42 +69,59 @@
       padding:0;
       overflow:hidden;
       position:relative;
-      min-height: 700px;
+      min-height: 720px;
     }
 
-    /* Level background “image” is applied here by JS via style.backgroundImage */
+    /* countryside-ish background "image" */
     .canvasBG{
       position:absolute; inset:0;
       border-radius: var(--radius);
       background-size: cover;
-      background-position: center;
-      filter: saturate(1.05) contrast(1.02);
+      background-position: 40% 50%;
+      animation: drift 18s ease-in-out infinite alternate;
+      filter: saturate(1.12) contrast(1.05);
+    }
+    @keyframes drift{
+      0%{ background-position: 35% 45%; }
+      100%{ background-position: 55% 55%; }
     }
     .canvasBG::after{
       content:"";
       position:absolute; inset:0;
       border-radius: var(--radius);
       background:
-        radial-gradient(800px 500px at 20% 10%, rgba(255,255,255,0.70), transparent 60%),
-        radial-gradient(800px 500px at 85% 20%, rgba(255,255,255,0.55), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.20));
+        radial-gradient(900px 550px at 15% 15%, rgba(255,255,255,0.65), transparent 60%),
+        radial-gradient(900px 550px at 85% 20%, rgba(255,255,255,0.50), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.18));
       pointer-events:none;
     }
 
     #stage{
       position:relative;
       width:100%;
-      height: 700px;
+      height: 720px;
       display:block;
       border-radius: var(--radius);
       touch-action: none;
+      z-index:2;
+    }
+
+    /* 2D confetti overlay */
+    #fx{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border-radius: var(--radius);
+      pointer-events:none;
+      z-index:4;
     }
 
     .hudTop{
       position:absolute; inset:12px 12px auto 12px;
       display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
       pointer-events:none;
-      z-index:3;
+      z-index:5;
     }
     .pill{
       pointer-events:auto;
@@ -118,26 +135,62 @@
     }
     .pill strong{color:var(--text)}
     .pill.level{
-      background: linear-gradient(180deg, rgba(29,79,255,0.18), rgba(29,79,255,0.10));
-      border-color: rgba(29,79,255,0.28);
-      color: rgba(11,43,189,0.95);
+      background: linear-gradient(180deg, rgba(255,153,0,0.22), rgba(0,168,107,0.12));
+      border-color: rgba(255,153,0,0.25);
+      color: rgba(8,12,24,0.90);
     }
 
     .hintOverlay{
       position:absolute; inset:auto 12px 12px 12px;
       pointer-events:none;
       display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
-      color: rgba(8,12,24,0.70);
+      color: rgba(8,12,24,0.72);
       font-weight:1000;
       font-size:12px;
-      z-index:3;
+      z-index:5;
     }
     .hintOverlay span{
-      background: rgba(255,255,255,0.82);
+      background: rgba(255,255,255,0.84);
       border: 1px solid rgba(8,12,24,0.10);
       padding: 8px 10px;
       border-radius: 999px;
     }
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .label{font-size:12px; color: var(--muted); font-weight:1000}
+    select, input{
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding:10px 12px;
+      background:#fff;
+      font-weight:1000;
+      outline:none;
+      width:auto;
+    }
+    input{
+      width:100%;
+      font-size:16px;
+    }
+    select:focus, input:focus{
+      border-color: rgba(255,153,0,0.60);
+      box-shadow: 0 0 0 4px rgba(255,153,0,0.18)
+    }
+
+    .prompt{font-size:16px; font-weight:1000; margin:10px 0 0;}
+    .mini{font-size:12px; color:var(--muted)}
+
+    .spellBox{
+      margin-top:10px;
+      padding:12px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+    }
+    .spell{
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      margin-top:8px;
+    }
+    .spell small{color:var(--muted); font-weight:1000}
 
     .btnRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
     .btn{
@@ -152,51 +205,19 @@
     }
     .btn:hover{transform: translateY(-1px); border-color: rgba(8,12,24,0.22)}
     .btn.primary{
-      background: linear-gradient(180deg, rgba(29,79,255,0.28), rgba(29,79,255,0.16));
-      border-color: rgba(29,79,255,0.60);
-      color: var(--blue2);
+      background: linear-gradient(180deg, rgba(255,153,0,0.28), rgba(255,153,0,0.14));
+      border-color: rgba(255,153,0,0.55);
+      color: rgba(120,60,0,1);
     }
     .btn.good{
-      background: linear-gradient(180deg, rgba(0,168,107,0.18), rgba(0,168,107,0.10));
+      background: linear-gradient(180deg, rgba(0,168,107,0.22), rgba(0,168,107,0.10));
       border-color: rgba(0,168,107,0.45);
       color: rgba(0,110,70,1);
     }
     .btn.bad{
-      background: linear-gradient(180deg, rgba(214,31,44,0.16), rgba(214,31,44,0.10));
+      background: linear-gradient(180deg, rgba(214,31,44,0.18), rgba(214,31,44,0.10));
       border-color: rgba(214,31,44,0.40);
       color: rgba(150,18,26,1);
-    }
-
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .label{font-size:12px; color: var(--muted); font-weight:1000}
-    select{
-      border:1px solid var(--line);
-      border-radius: 12px;
-      padding:10px 12px;
-      background:#fff;
-      font-weight:1000;
-      outline:none;
-    }
-    select:focus{border-color: rgba(29,79,255,0.60); box-shadow: 0 0 0 4px rgba(29,79,255,0.16)}
-    .prompt{
-      font-size:16px;
-      font-weight:1000;
-      margin:10px 0 0;
-    }
-    .mini{font-size:12px; color:var(--muted)}
-    .spellBox{
-      margin-top:10px;
-      padding:12px;
-      border-radius: 16px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,0.90);
-    }
-    .spell{
-      font-size:22px;
-      letter-spacing: 1px;
-      font-weight:1000;
-      word-break: break-word;
-      min-height: 28px;
     }
 
     .msg{
@@ -224,13 +245,9 @@
       padding:10px 10px;
       border:1px solid rgba(8,12,24,0.10);
       border-radius: 14px;
-      background: rgba(255,255,255,0.92);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
       font-weight:1000;
       align-items:center;
-    }
-    .chip.done{
-      border-color: rgba(0,168,107,0.30);
-      background: linear-gradient(180deg, rgba(0,168,107,0.14), rgba(255,255,255,0.92));
     }
     .chip small{color:var(--muted); font-weight:1000}
 
@@ -250,7 +267,7 @@
       <div class="logo">🧊</div>
       <div>
         <div class="title">Turbo Family Tower</div>
-        <div class="subtitle">Click blocks to spell the Spanish word · drag to rotate · scroll to zoom</div>
+        <div class="subtitle">Click blocks or type · drag to rotate/tilt · scroll to zoom</div>
       </div>
     </div>
     <div class="row">
@@ -265,6 +282,7 @@
     <div class="card canvasWrap">
       <div id="canvasBG" class="canvasBG"></div>
       <canvas id="stage"></canvas>
+      <canvas id="fx"></canvas>
 
       <div class="hudTop">
         <div class="pill level">🧠 Level <strong id="levelBadge">1</strong></div>
@@ -275,8 +293,8 @@
       </div>
 
       <div class="hintOverlay">
-        <span>🌀 Drag to rotate</span>
-        <span>🔎 Scroll to zoom</span>
+        <span>🌀 Drag = rotate · Drag up/down = tilt</span>
+        <span>🔎 Scroll = zoom</span>
       </div>
     </div>
 
@@ -286,13 +304,18 @@
       <div class="mini" id="hintLine">Hints cost points and reset streak.</div>
 
       <div class="spellBox">
-        <div class="label">Your spelling</div>
-        <div class="spell" id="spelling">—</div>
-        <div class="mini">Tip: phrases can include spaces (e.g. <em>salir con</em>). Use “Clear” if you misclick.</div>
+        <div class="label">Your answer (blocks fill this, but typing is allowed)</div>
+        <input id="typed" autocomplete="off" spellcheck="false" placeholder="Type here if blocks are fiddly…" />
+        <div class="spell">
+          <small>SPACE + UNDO help for phrases</small>
+          <small><span id="typedCount">0</span> chars</small>
+        </div>
       </div>
 
       <div class="btnRow">
         <button class="btn primary" id="btnSubmit">Submit</button>
+        <button class="btn" id="btnUndo">Undo</button>
+        <button class="btn" id="btnSpace">Space</button>
         <button class="btn" id="btnClear">Clear</button>
         <button class="btn good" id="btnShuffle">Shuffle Tower</button>
         <button class="btn bad" id="btnHint">Hint</button>
@@ -300,7 +323,7 @@
 
       <div class="msg" id="msg" style="display:none"></div>
 
-      <div class="label" style="margin-top:12px">This round</div>
+      <div class="label" style="margin-top:12px">Words left (this round)</div>
       <div class="list" id="roundList"></div>
     </div>
   </main>
@@ -455,7 +478,7 @@
     ]
   };
 
-  // Kid-friendly checking: accents not required, ñ can be typed as n, punctuation ignored
+  // --------- tolerant checking (accents optional, ñ treated as n) ----------
   const ACC = {"á":"a","é":"e","í":"i","ó":"o","ú":"u","ü":"u","Á":"A","É":"E","Í":"I","Ó":"O","Ú":"U","Ü":"U"};
   const stripAccents = (s)=> String(s).split("").map(ch=>ACC[ch]||ch).join("");
   const norm = (s)=> stripAccents(String(s||"").toLowerCase().trim())
@@ -463,132 +486,116 @@
     .replace(/\s+/g," ")
     .replace(/ñ/g,"n");
 
+  // --------- UI refs ----------
   const $ = (id)=> document.getElementById(id);
   const levelSel = $("levelSel");
   const btnNew = $("btnNew");
   const btnScores = $("btnScores");
   const btnSubmit = $("btnSubmit");
+  const btnUndo = $("btnUndo");
+  const btnSpace = $("btnSpace");
   const btnClear = $("btnClear");
   const btnShuffle = $("btnShuffle");
   const btnHint = $("btnHint");
 
+  const levelBadge = $("levelBadge");
   const timeEl = $("time");
   const scoreEl = $("score");
   const streakEl = $("streak");
   const leftEl = $("left");
   const promptEl = $("prompt");
   const hintLine = $("hintLine");
-  const spellingEl = $("spelling");
   const msgEl = $("msg");
   const roundList = $("roundList");
-  const levelBadge = $("levelBadge");
+  const typed = $("typed");
+  const typedCount = $("typedCount");
   const canvasBG = $("canvasBG");
 
-  // ----- Level background “images” (SVG data URIs, no files needed) -----
-  // If you ever want real photos: replace each entry with url('images/level1.jpg') etc.
-  function bgSvg(themeColorA, themeColorB, icon){
-    const svg =
-`<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'>
-  <defs>
-    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
-      <stop offset='0' stop-color='${themeColorA}'/>
-      <stop offset='1' stop-color='${themeColorB}'/>
-    </linearGradient>
-    <radialGradient id='r' cx='30%' cy='20%' r='70%'>
-      <stop offset='0' stop-color='rgba(255,255,255,0.55)'/>
-      <stop offset='1' stop-color='rgba(255,255,255,0)'/>
-    </radialGradient>
-  </defs>
-  <rect width='1600' height='900' fill='url(#g)'/>
-  <rect width='1600' height='900' fill='url(#r)'/>
-  <g opacity='0.20' fill='white'>
-    <circle cx='260' cy='160' r='120'/>
-    <circle cx='1360' cy='240' r='160'/>
-    <circle cx='1160' cy='760' r='200'/>
-    <circle cx='360' cy='720' r='220'/>
-  </g>
-  <g opacity='0.24' fill='white' font-family='system-ui,Segoe UI,Roboto' font-weight='900'>
-    <text x='80' y='190' font-size='120'>${icon}</text>
-    <text x='1400' y='840' font-size='120'>${icon}</text>
-  </g>
-</svg>`;
+  typed.addEventListener("input", ()=> typedCount.textContent = String(typed.value.length));
+
+  // --------- Backgrounds (countryside-ish SVGs; swap to real photos later if you want) ----------
+  function bgCountryside(skyA, skyB, hillA, hillB, sun){
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'>
+      <defs>
+        <linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'>
+          <stop offset='0' stop-color='${skyA}'/>
+          <stop offset='1' stop-color='${skyB}'/>
+        </linearGradient>
+        <linearGradient id='h1' x1='0' y1='0' x2='1' y2='1'>
+          <stop offset='0' stop-color='${hillA}'/>
+          <stop offset='1' stop-color='${hillB}'/>
+        </linearGradient>
+      </defs>
+      <rect width='1600' height='900' fill='url(#sky)'/>
+      <circle cx='260' cy='190' r='110' fill='${sun}' opacity='0.85'/>
+      <g opacity='0.55' fill='white'>
+        <ellipse cx='520' cy='210' rx='180' ry='60'/>
+        <ellipse cx='660' cy='230' rx='140' ry='50'/>
+        <ellipse cx='1180' cy='220' rx='210' ry='70'/>
+        <ellipse cx='1320' cy='245' rx='150' ry='55'/>
+      </g>
+      <path d='M0,620 C220,520 420,560 620,610 C820,660 1040,520 1260,560 C1420,590 1510,610 1600,590 L1600,900 L0,900 Z'
+        fill='url(#h1)' opacity='0.92'/>
+      <path d='M0,690 C240,620 420,650 640,700 C860,750 1040,640 1260,680 C1440,710 1520,720 1600,700 L1600,900 L0,900 Z'
+        fill='rgba(20,120,70,0.45)'/>
+      <g opacity='0.18' fill='rgba(0,0,0,0.40)'>
+        <path d='M210 650 l20 -70 l20 70 z'/>
+        <path d='M240 650 l20 -90 l20 90 z'/>
+        <path d='M1320 670 l20 -70 l20 70 z'/>
+        <path d='M1350 670 l20 -90 l20 90 z'/>
+      </g>
+    </svg>`;
     return "url(\"data:image/svg+xml;utf8," + encodeURIComponent(svg) + "\")";
   }
 
   const LEVEL_BG = {
-    1: bgSvg("#9be7ff","#d6fff3","👪"),
-    2: bgSvg("#a7c7ff","#ffe0f1","🏡"),
-    3: bgSvg("#c7ffd8","#fff3b0","🧩"),
-    4: bgSvg("#ffd1a8","#c7f0ff","🧹"),
-    5: bgSvg("#ffb3d9","#c7d2ff","💞"),
-    6: bgSvg("#b6ffea","#c8ffd0","🍼"),
-    7: bgSvg("#bde0fe","#caffbf","🌳"),
-    8: bgSvg("#ffd6a5","#fdffb6","📏"),
-    9: bgSvg("#ffc6ff","#bdb2ff","🛡️"),
-    10:bgSvg("#bdb2ff","#a0c4ff","🏆")
+    1: bgCountryside("#fff1c7","#d7fff0","#7adf97","#3fbf7a","#ffd96b"),
+    2: bgCountryside("#ffe4f3","#d8fff2","#7fe0b2","#47c58c","#ffe07a"),
+    3: bgCountryside("#e6fff7","#fff3cf","#7de1a4","#44c07e","#ffd26a"),
+    4: bgCountryside("#fff0d6","#e3fff3","#7adf97","#3fbf7a","#ffd96b"),
+    5: bgCountryside("#e7ecff","#fff0d6","#82dfae","#49c892","#ffd96b"),
+    6: bgCountryside("#e9fff4","#ffe9f4","#7fe0b2","#47c58c","#ffe07a"),
+    7: bgCountryside("#f3ffe0","#e5fff6","#7adf97","#3fbf7a","#ffd96b"),
+    8: bgCountryside("#fff7d6","#e8fff3","#7fe0b2","#47c58c","#ffe07a"),
+    9: bgCountryside("#ffe9ec","#e4fff6","#7adf97","#3fbf7a","#ffd96b"),
+    10:bgCountryside("#f1e7ff","#fff3d4","#7fe0b2","#47c58c","#ffe07a")
   };
-
   function applyLevelBackground(level){
-    canvasBG.style.backgroundImage =
-      "linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.20))," + (LEVEL_BG[level] || LEVEL_BG[1]);
+    canvasBG.style.backgroundImage = LEVEL_BG[level] || LEVEL_BG[1];
   }
 
-  // ---------- Colour palette (brighter blocks) ----------
-  const LEVEL_HUES = [205, 190, 160, 135, 320, 110, 80, 30, 350, 260]; // 1..10
-  function rand(min,max){ return min + Math.random()*(max-min); }
-  function hslToHex(h,s,l){
-    s/=100; l/=100;
-    const k = n => (n + h/30) % 12;
-    const a = s * Math.min(l, 1 - l);
-    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-    const toHex = x => Math.round(255 * x).toString(16).padStart(2,"0");
-    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
-  }
-  function brightColour(level){
-    const base = LEVEL_HUES[Math.max(0, Math.min(9, level-1))];
-    const h = (base + rand(-18,18) + 360) % 360;
-    const s = rand(68, 90);
-    const l = rand(56, 72);
-    return hslToHex(h,s,l);
-  }
-
-  // ---------- Game state ----------
+  // --------- State ----------
   const STATE = {
     level: 1,
     roundSize: 8,
-    round: [],
-    currentIndex: 0,
-    currentItem: null,
-    acceptedAnswers: [],
+    remaining: [],
+    current: null,
     selectedBlocks: [],
-    selectedText: "",
     startedAt: 0,
     timerId: null,
     score: 0,
-    streak: 0,
-    hintsUsed: 0,
-    done: 0
+    streak: 0
   };
 
-  // ---------- Three.js scene ----------
-  const canvas = $("stage");
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  // --------- Three.js ----------
+  const stage = $("stage");
+  const renderer = new THREE.WebGLRenderer({ canvas: stage, antialias:true, alpha:true });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xf2f6ff, 12, 70);
+  scene.fog = new THREE.Fog(0xf7fff7, 14, 85);
 
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
 
-  // More top-down orbit camera
-  const target = new THREE.Vector3(0, 2.3, 0);
-  let radius = 24;
+  // freer orbit camera: more tilt/rotation range
+  const target = new THREE.Vector3(0, 2.4, 0);
+  let radius = 25;
   let theta = Math.PI * 0.25;
-  let phi   = Math.PI * 0.30; // MORE top-down by default
-  const phiMin = Math.PI * 0.20;
-  const phiMax = Math.PI * 0.48;
-  const radMin = 16;
-  const radMax = 34;
+  let phi   = Math.PI * 0.26; // more top-down
+  const phiMin = Math.PI * 0.12; // almost top-down
+  const phiMax = Math.PI * 0.72; // quite side-on if they want it
+  const radMin = 15;
+  const radMax = 40;
 
   function updateCamera(){
     const sinPhi = Math.sin(phi);
@@ -600,20 +607,20 @@
     camera.lookAt(target);
   }
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x445566, 1.05);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x335544, 1.10);
   scene.add(hemi);
-  const dir = new THREE.DirectionalLight(0xffffff, 1.0);
-  dir.position.set(14, 24, 12);
+  const dir = new THREE.DirectionalLight(0xffffff, 1.05);
+  dir.position.set(16, 26, 12);
   scene.add(dir);
 
-  const groundGeo = new THREE.PlaneGeometry(90, 90);
-  const groundMat = new THREE.MeshStandardMaterial({ color:0xffffff, transparent:true, opacity:0.34, roughness:1 });
+  const groundGeo = new THREE.PlaneGeometry(100, 100);
+  const groundMat = new THREE.MeshStandardMaterial({ color:0xffffff, transparent:true, opacity:0.30, roughness:1 });
   const ground = new THREE.Mesh(groundGeo, groundMat);
   ground.rotation.x = -Math.PI/2;
-  ground.position.y = -0.85;
+  ground.position.y = -0.95;
   scene.add(ground);
 
-  // Tower settings
+  // tower settings
   const GRID = 7;
   const HEIGHT = 7;
   const SIZE = 1.24;
@@ -625,37 +632,48 @@
     -(GRID-1)*(SIZE+GAP)/2
   );
 
+  const blockGroup = new THREE.Group();
+  scene.add(blockGroup);
+
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let hovered = null;
 
-  const blockGroup = new THREE.Group();
-  scene.add(blockGroup);
+  // colourful blocks
+  const LEVEL_HUES = [35, 120, 160, 85, 310, 210, 55, 25, 350, 270];
+  const rand = (a,b)=> a + Math.random()*(b-a);
+  function hslToHex(h,s,l){
+    s/=100; l/=100;
+    const k = n => (n + h/30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = x => Math.round(255 * x).toString(16).padStart(2,"0");
+    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+  }
+  function brightColour(level){
+    const base = LEVEL_HUES[Math.max(0, Math.min(9, level-1))];
+    const h = (base + rand(-18,18) + 360) % 360;
+    const s = rand(70, 92);
+    const l = rand(55, 72);
+    return hslToHex(h,s,l);
+  }
 
   function makeLetterTexture(letter){
     const c = document.createElement("canvas");
     c.width = 256; c.height = 256;
     const ctx = c.getContext("2d");
-
     ctx.fillStyle = "rgba(255,255,255,0.98)";
     ctx.fillRect(0,0,c.width,c.height);
-
-    // border
     ctx.strokeStyle = "rgba(8,12,24,0.22)";
     ctx.lineWidth = 14;
     ctx.strokeRect(16,16,c.width-32,c.height-32);
-
-    // big letter
     ctx.fillStyle = "rgba(8,12,24,0.92)";
     ctx.font = "900 178px system-ui, -apple-system, Segoe UI, Roboto";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(letter, 128, 142);
-
-    // playful highlight
-    ctx.fillStyle = "rgba(29,79,255,0.12)";
+    ctx.fillStyle = "rgba(255,153,0,0.12)";
     ctx.beginPath(); ctx.arc(72,72,84,0,Math.PI*2); ctx.fill();
-
     const tex = new THREE.CanvasTexture(c);
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy?.() || 1;
     return tex;
@@ -664,19 +682,13 @@
   function makeBlock(letter, pos, level){
     const geo = new THREE.BoxGeometry(SIZE, SIZE, SIZE);
 
-    // colourful sides
     const sideHex = new THREE.Color(brightColour(level)).getHex();
-    const sideMat = new THREE.MeshStandardMaterial({
-      color: sideHex,
-      roughness: 0.55,
-      metalness: 0.06
-    });
+    const sideMat = new THREE.MeshStandardMaterial({ color: sideHex, roughness: 0.52, metalness: 0.06 });
 
-    // top with letter
     const topMat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
-      roughness: 0.42,
-      metalness: 0.04,
+      roughness: 0.40,
+      metalness: 0.05,
       map: makeLetterTexture(letter)
     });
 
@@ -696,12 +708,14 @@
     const pool = [];
     for(const it of items){
       for(const a of it.answers){
+        // use NORM so tower letters are plain (no accents)
         norm(a).split("").forEach(ch=>{
           if(/[a-z]/.test(ch)) pool.push(ch.toUpperCase());
           if(ch===" ") pool.push(" ");
         });
       }
     }
+    // fallback
     const fallback = "AAABCDEEEFGHIJKLMNÑNOOOPQRSTUUVWXYZ".replace(/[^A-ZÑ]/g,"").split("");
     return pool.length ? pool : fallback;
   }
@@ -731,39 +745,113 @@
   }
 
   function resize(){
-    const rect = canvas.getBoundingClientRect();
+    const rect = stage.getBoundingClientRect();
     const w = Math.max(320, Math.floor(rect.width));
     const h = Math.max(520, Math.floor(rect.height));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+
+    // confetti overlay size
+    const fx = $("fx");
+    fx.width = Math.floor(w * (window.devicePixelRatio||1));
+    fx.height = Math.floor(h * (window.devicePixelRatio||1));
+    fx.style.width = w + "px";
+    fx.style.height = h + "px";
   }
   window.addEventListener("resize", resize);
 
-  function animate(){
-    requestAnimationFrame(animate);
-
-    // gentle “selected wobble”
-    const t = performance.now();
-    for(const b of blockGroup.children){
-      if(!b.userData.alive) continue;
-      if(b.userData.selected){
-        b.position.y += Math.sin(t/260 + b.position.x*2 + b.position.z*2) * 0.0007;
-      }
+  // --------- 2D confetti burst ----------
+  const fx = $("fx");
+  const fxCtx = fx.getContext("2d");
+  const confetti = [];
+  function burst2D(x,y,amount=60){
+    const dpr = (window.devicePixelRatio||1);
+    const X = x*dpr, Y = y*dpr;
+    for(let i=0;i<amount;i++){
+      confetti.push({
+        x:X, y:Y,
+        vx:(Math.random()*2-1)*8*dpr,
+        vy:(Math.random()*-1.2-0.2)*12*dpr,
+        g:0.55*dpr,
+        rot:Math.random()*Math.PI,
+        vr:(Math.random()*2-1)*0.25,
+        life: 70 + Math.random()*30,
+        w: (6+Math.random()*8)*dpr,
+        h: (6+Math.random()*12)*dpr,
+        col: `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`
+      });
     }
+  }
+  function renderFX(){
+    fxCtx.clearRect(0,0,fx.width,fx.height);
+    for(let i=confetti.length-1;i>=0;i--){
+      const p = confetti[i];
+      p.life -= 1;
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
 
-    updateCamera();
-    renderer.render(scene, camera);
+      fxCtx.save();
+      fxCtx.translate(p.x, p.y);
+      fxCtx.rotate(p.rot);
+      fxCtx.fillStyle = p.col;
+      fxCtx.globalAlpha = Math.max(0, Math.min(1, p.life/90));
+      fxCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      fxCtx.restore();
+
+      if(p.life<=0) confetti.splice(i,1);
+    }
   }
 
-  // ---------- Round logic ----------
-  function pickRound(level){
-    const all = [...(FAMILY[level] || [])];
-    for(let i=all.length-1;i>0;i--){
+  // --------- Round logic ----------
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
       const j = Math.floor(Math.random()*(i+1));
-      [all[i],all[j]]=[all[j],all[i]];
+      [arr[i],arr[j]]=[arr[j],arr[i]];
     }
+    return arr;
+  }
+
+  function pickRound(level){
+    const all = shuffle([...(FAMILY[level] || [])]);
     return all.slice(0, Math.min(STATE.roundSize, all.length));
+  }
+
+  function setMsg(text, kind){
+    msgEl.style.display = "block";
+    msgEl.className = "msg" + (kind ? " "+kind : "");
+    msgEl.textContent = text;
+  }
+  function clearMsg(){
+    msgEl.style.display = "none";
+    msgEl.textContent = "";
+    msgEl.className = "msg";
+  }
+
+  function renderList(){
+    roundList.innerHTML = "";
+    for(const it of STATE.remaining){
+      const div = document.createElement("div");
+      div.className = "chip";
+      div.innerHTML = `<span>${it.en}</span><small>left</small>`;
+      roundList.appendChild(div);
+    }
+    leftEl.textContent = String(STATE.remaining.length);
+  }
+
+  function setCurrent(){
+    STATE.current = STATE.remaining[0] || null;
+    clearSelection();
+    clearMsg();
+
+    if(!STATE.current){
+      endRound();
+      return;
+    }
+    promptEl.textContent = `Spell: ${STATE.current.en}`;
+    hintLine.textContent = "Hints cost points and reset streak.";
   }
 
   function startTimer(){
@@ -784,68 +872,118 @@
     return `${m}:${r<10?"0"+r:r}`;
   }
 
-  function setMsg(text, kind){
-    msgEl.style.display = "block";
-    msgEl.className = "msg" + (kind ? " "+kind : "");
-    msgEl.textContent = text;
-  }
-  function clearMsg(){
-    msgEl.style.display = "none";
-    msgEl.textContent = "";
-    msgEl.className = "msg";
+  function scoreForCorrect(answerText){
+    const elapsed = (performance.now() - STATE.startedAt)/1000;
+    const speed = Math.max(0, Math.floor(175 - elapsed));
+    const base = 140 + Math.min(240, norm(answerText).replace(/ /g,"").length * 18);
+    const multi = 1 + Math.min(5, Math.floor(STATE.streak/3))*0.5;
+    return Math.round((base + speed) * multi);
   }
 
-  function renderRoundList(){
-    roundList.innerHTML = "";
-    STATE.round.forEach((it, idx)=>{
-      const done = idx < STATE.done;
-      const div = document.createElement("div");
-      div.className = "chip" + (done ? " done" : "");
-      div.innerHTML = `<span>${done ? "✅ " : ""}${it.en}</span><small>${done ? "done" : "pending"}</small>`;
-      roundList.appendChild(div);
-    });
-    leftEl.textContent = String(Math.max(0, STATE.round.length - STATE.done));
+  function bestKey(lvl){ return `family_tower_best_FINAL2::L${lvl}`; }
+  function bestScore(lvl){
+    const n = parseInt(localStorage.getItem(bestKey(lvl)) || "0", 10);
+    return Number.isFinite(n) ? n : 0;
+  }
+  function saveBest(lvl, score){
+    const b = bestScore(lvl);
+    if(score > b) localStorage.setItem(bestKey(lvl), String(score));
+  }
+  function showScores(){
+    const lines = [];
+    for(let l=1;l<=10;l++) lines.push(`Level ${l}: ${bestScore(l)}`);
+    alert("High Scores (this device)\n\n" + lines.join("\n"));
   }
 
+  function endRound(){
+    stopTimer();
+    saveBest(STATE.level, STATE.score);
+    setMsg(`🏁 Round complete! Final score: ${STATE.score}. Hit “New Round” to play again.`, "good");
+  }
+
+  // --------- Selection / typing ----------
   function clearSelection(){
     for(const b of STATE.selectedBlocks){
       b.userData.selected = false;
       const sideHex = b.userData.sideHex || 0xffffff;
-      b.material.forEach((m,i)=>{
-        if(m?.color && i !== 2) m.color.setHex(sideHex);
-      });
+      b.material.forEach((m,i)=>{ if(m?.color && i!==2) m.color.setHex(sideHex); });
       b.scale.set(1,1,1);
     }
     STATE.selectedBlocks = [];
-    STATE.selectedText = "";
-    spellingEl.textContent = "—";
+    typed.value = "";
+    typedCount.textContent = "0";
   }
 
-  function setCurrent(index){
-    STATE.currentIndex = index;
-    STATE.currentItem = STATE.round[index] || null;
-    if(!STATE.currentItem) return;
-    promptEl.textContent = `Spell: ${STATE.currentItem.en}`;
-    STATE.acceptedAnswers = STATE.currentItem.answers.slice();
-    clearSelection();
-    clearMsg();
-    hintLine.textContent = "Hints cost points and reset streak.";
+  function undoOne(){
+    const b = STATE.selectedBlocks.pop();
+    if(!b) return;
+    b.userData.selected = false;
+    const sideHex = b.userData.sideHex || 0xffffff;
+    b.material.forEach((m,i)=>{ if(m?.color && i!==2) m.color.setHex(sideHex); });
+    b.scale.set(1,1,1);
+    typed.value = typed.value.slice(0,-1);
+    typedCount.textContent = String(typed.value.length);
   }
 
-  function addLetter(block){
-    STATE.selectedBlocks.push(block);
-    STATE.selectedText += block.userData.letter;
-    spellingEl.textContent = STATE.selectedText || "—";
+  function addChar(ch){
+    typed.value += ch;
+    typedCount.textContent = String(typed.value.length);
+    typed.focus({preventScroll:true});
   }
 
-  function removeBlocks(blocks){
+  // --------- Spectacular removal: pop + spin + fly + confetti ----------
+  function projectToScreen(vec3){
+    // returns {x,y} in canvas pixels
+    const rect = stage.getBoundingClientRect();
+    const v = vec3.clone().project(camera);
+    const x = ( v.x * 0.5 + 0.5) * rect.width;
+    const y = (-v.y * 0.5 + 0.5) * rect.height;
+    return {x,y};
+  }
+
+  function removeBlocksSpectacular(blocks){
+    // confetti burst at centroid
+    const center = new THREE.Vector3(0,0,0);
+    for(const b of blocks) center.add(b.position);
+    center.multiplyScalar(1/Math.max(1, blocks.length));
+    const p2 = projectToScreen(center);
+    burst2D(p2.x, p2.y, 75);
+
     const start = performance.now();
-    const dur = 220;
+    const dur = 520;
+
+    // pick random directions
+    const dirs = blocks.map(()=> new THREE.Vector3(
+      (Math.random()*2-1)*0.05,
+      0.10 + Math.random()*0.10,
+      (Math.random()*2-1)*0.05
+    ));
+
     const anim = ()=>{
       const t = Math.min(1, (performance.now()-start)/dur);
-      for(const b of blocks){
-        b.scale.setScalar(1 - t);
+      const ease = 1 - Math.pow(1-t, 3);
+
+      for(let i=0;i<blocks.length;i++){
+        const b = blocks[i];
+        const d = dirs[i];
+        // fly upwards + outwards
+        b.position.addScaledVector(d, 1.2);
+        b.rotation.x += 0.12;
+        b.rotation.y += 0.16;
+
+        // pop bigger then shrink
+        const s = (t < 0.25) ? (1 + t*1.2) : (1.3 - (t-0.25)*1.6);
+        b.scale.setScalar(Math.max(0.05, s));
+
+        // fade sides
+        b.material.forEach((m, idx)=>{
+          if(m?.opacity !== undefined){
+            m.transparent = true;
+            m.opacity = Math.max(0, 1 - ease);
+          }
+        });
       }
+
       if(t < 1) requestAnimationFrame(anim);
       else{
         for(const b of blocks){
@@ -857,99 +995,80 @@
     anim();
   }
 
-  function scoreForCorrect(answerText){
-    const elapsed = (performance.now() - STATE.startedAt)/1000;
-    const speed = Math.max(0, Math.floor(175 - elapsed));
-    const base = 130 + Math.min(220, norm(answerText).replace(/ /g,"").length * 18);
-    const multi = 1 + Math.min(4, Math.floor(STATE.streak/3))*0.5;
-    return Math.round((base + speed) * multi);
-  }
+  // --------- Answer check (FIXED + more forgiving) ----------
+  function isCorrect(typedRaw, answers){
+    const typedN = norm(typedRaw);
+    const typedNoSpace = typedN.replace(/ /g,"");
 
-  function endRound(){
-    stopTimer();
-    setMsg(`Round complete! Final score: ${STATE.score}. Tap “New Round” to play again.`, "good");
-    saveBestScore(STATE.level, STATE.score);
+    return answers.some(a=>{
+      const aN = norm(a);
+      const aNoSpace = aN.replace(/ /g,"");
+      return typedN === aN || typedNoSpace === aNoSpace;
+    });
   }
 
   function submit(){
-    if(!STATE.currentItem) return;
-    const typed = STATE.selectedText.trim();
-    if(!typed){
-      setMsg("Pick some letter blocks first!", "bad");
+    if(!STATE.current) return;
+
+    const raw = typed.value.trim();
+    if(!raw){
+      setMsg("Pick some letter blocks or type the answer first!", "bad");
       return;
     }
 
-    const typedN = norm(typed);
-    const ok = STATE.acceptedAnswers.some(a=>{
-      const aN = norm(a);
-      return (typedN === aN) || (typedN.replace(/ /g,"") === aN.replace(/ /g,""));
-    });
+    const ok = isCorrect(raw, STATE.current.answers);
 
     if(ok){
-      const pts = scoreForCorrect(STATE.acceptedAnswers[0]);
+      const pts = scoreForCorrect(STATE.current.answers[0]);
       STATE.score += pts;
       STATE.streak += 1;
       scoreEl.textContent = String(STATE.score);
       streakEl.textContent = String(STATE.streak);
 
       setMsg(`✅ Correct! +${pts} points`, "good");
-      removeBlocks(STATE.selectedBlocks);
 
-      STATE.done += 1;
-      renderRoundList();
-
-      if(STATE.done >= STATE.round.length){
-        endRound();
+      // remove blocks (if any were used)
+      if(STATE.selectedBlocks.length){
+        removeBlocksSpectacular([...STATE.selectedBlocks]);
       } else {
-        setTimeout(()=> setCurrent(STATE.done), 280);
+        // still reward with confetti even if typed
+        burst2D(stage.getBoundingClientRect().width*0.5, stage.getBoundingClientRect().height*0.35, 60);
       }
+
+      // IMPORTANT: remove the word from the list properly
+      STATE.remaining.shift();      // remove current word
+      renderList();
+      setTimeout(()=> setCurrent(), 220);
       return;
     }
 
+    // wrong
     STATE.streak = 0;
     streakEl.textContent = "0";
     STATE.score = Math.max(0, STATE.score - 60);
     scoreEl.textContent = String(STATE.score);
+
+    // tiny debug without giving it away fully: show length + first letter
+    const a0 = norm(STATE.current.answers[0]);
+    hintLine.textContent = `Tip: starts with “${(a0[0]||"").toUpperCase()}” · length ${a0.replace(/ /g,"").length}`;
+
     setMsg("❌ Not quite. Try again (penalty −60).", "bad");
-    clearSelection();
   }
 
   function useHint(){
-    if(!STATE.currentItem) return;
-    STATE.hintsUsed += 1;
+    if(!STATE.current) return;
     STATE.streak = 0;
     streakEl.textContent = "0";
     STATE.score = Math.max(0, STATE.score - 80);
     scoreEl.textContent = String(STATE.score);
 
-    const any = STATE.acceptedAnswers[0] || "";
-    const clean = norm(any);
-    const first = clean[0] ? clean[0].toUpperCase() : "";
-    const len = clean.replace(/ /g,"").length;
-    hintLine.textContent = `Hint: starts with “${first}” · length ${len} (−80 points)`;
+    const a0 = norm(STATE.current.answers[0]);
+    hintLine.textContent = `Hint: starts with “${(a0[0]||"").toUpperCase()}” · length ${a0.replace(/ /g,"").length} (−80 points)`;
   }
 
-  // ---------- High scores (localStorage) ----------
-  const scoreKey = (lvl)=> `family_tower_best_FINAL::L${lvl}`;
-  function bestScore(lvl){
-    const n = parseInt(localStorage.getItem(scoreKey(lvl)) || "0", 10);
-    return Number.isFinite(n) ? n : 0;
-  }
-  function saveBestScore(lvl, score){
-    const b = bestScore(lvl);
-    if(score > b) localStorage.setItem(scoreKey(lvl), String(score));
-  }
-  function showScores(){
-    const lines = [];
-    for(let l=1;l<=10;l++){
-      lines.push(`Level ${l}: ${bestScore(l)}`);
-    }
-    alert("High Scores (this device)\n\n" + lines.join("\n"));
-  }
-
-  // ---------- Picking (hover + click) ----------
+  // --------- Picking blocks ----------
   function pickFromPointer(ev){
-    const rect = canvas.getBoundingClientRect();
+    const rect = stage.getBoundingClientRect();
     const x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -(((ev.clientY - rect.top) / rect.height) * 2 - 1);
     mouse.set(x,y);
@@ -969,76 +1088,97 @@
       hovered.material.forEach((m,i)=>{
         if(m?.color && i!==2){
           const c = new THREE.Color(m.color.getHex());
-          c.offsetHSL(0, 0, 0.10);
+          c.offsetHSL(0, 0, 0.12);
           m.color.setHex(c.getHex());
         }
       });
     }
   }
 
-  canvas.addEventListener("mousemove", (ev)=>{
+  stage.addEventListener("mousemove", (ev)=>{
     const obj = pickFromPointer(ev);
     setHover(obj);
   });
-  canvas.addEventListener("mouseleave", ()=> setHover(null));
+  stage.addEventListener("mouseleave", ()=> setHover(null));
 
-  canvas.addEventListener("click", (ev)=>{
+  stage.addEventListener("click", (ev)=>{
     const obj = pickFromPointer(ev);
     if(!obj || !obj.userData.alive) return;
     if(obj.userData.selected) return;
 
     obj.userData.selected = true;
-
-    // selected highlight
     obj.material.forEach((m,i)=>{
-      if(m?.color && i!==2) m.color.setHex(new THREE.Color("#dff7ee").getHex());
+      if(m?.color && i!==2) m.color.setHex(new THREE.Color("#fff2cc").getHex());
     });
     obj.scale.set(1.06,1.06,1.06);
 
-    addLetter(obj);
+    STATE.selectedBlocks.push(obj);
+    addChar(obj.userData.letter);
 
-    // auto-submit if exact match
-    const typedN = norm(STATE.selectedText);
-    const exact = STATE.acceptedAnswers.some(a=> norm(a) === typedN);
-    if(exact) submit();
+    // auto-submit if exact match (nice for kids)
+    if(STATE.current){
+      const raw = typed.value.trim();
+      const exact = STATE.current.answers.some(a => norm(a) === norm(raw));
+      if(exact) submit();
+    }
   });
 
-  // ---------- Drag rotate + wheel zoom ----------
+  // --------- Drag rotate + tilt + zoom (LESS LIMITED) ----------
   let dragging = false;
   let lastX = 0, lastY = 0;
 
-  canvas.addEventListener("pointerdown", (e)=>{
+  stage.addEventListener("pointerdown", (e)=>{
     dragging = true;
-    canvas.setPointerCapture(e.pointerId);
+    stage.setPointerCapture(e.pointerId);
     lastX = e.clientX;
     lastY = e.clientY;
   });
 
-  canvas.addEventListener("pointermove", (e)=>{
+  stage.addEventListener("pointermove", (e)=>{
     if(!dragging) return;
     const dx = e.clientX - lastX;
     const dy = e.clientY - lastY;
     lastX = e.clientX;
     lastY = e.clientY;
 
-    // ✅ FIX: rotation NOT inverted
-    theta += dx * 0.008;     // was -= (now feels natural)
-    phi   += dy * 0.006;
+    // free rotation: natural direction
+    theta += dx * 0.010;
+
+    // freer tilt
+    phi   += dy * 0.008;
     phi = Math.max(phiMin, Math.min(phiMax, phi));
   });
 
-  canvas.addEventListener("pointerup", (e)=>{
+  stage.addEventListener("pointerup", (e)=>{
     dragging = false;
-    try{ canvas.releasePointerCapture(e.pointerId); }catch(_){}
+    try{ stage.releasePointerCapture(e.pointerId); }catch(_){}
   });
 
-  canvas.addEventListener("wheel", (e)=>{
+  stage.addEventListener("wheel", (e)=>{
     e.preventDefault();
-    radius += e.deltaY * 0.01;
+    radius += e.deltaY * 0.012;
     radius = Math.max(radMin, Math.min(radMax, radius));
   }, { passive:false });
 
-  // ---------- New game / round ----------
+  // --------- Animate ----------
+  function animate(){
+    requestAnimationFrame(animate);
+
+    // wobble for selected
+    const t = performance.now();
+    for(const b of blockGroup.children){
+      if(!b.userData.alive) continue;
+      if(b.userData.selected){
+        b.position.y += Math.sin(t/250 + b.position.x*2 + b.position.z*2) * 0.0007;
+      }
+    }
+
+    updateCamera();
+    renderer.render(scene, camera);
+    renderFX();
+  }
+
+  // --------- Round start / shuffle ----------
   function newRound(){
     STATE.level = parseInt(levelSel.value, 10);
     levelBadge.textContent = String(STATE.level);
@@ -1046,23 +1186,23 @@
 
     STATE.score = 0;
     STATE.streak = 0;
-    STATE.hintsUsed = 0;
-    STATE.done = 0;
     scoreEl.textContent = "0";
     streakEl.textContent = "0";
-    clearMsg();
 
-    STATE.round = pickRound(STATE.level);
-    renderRoundList();
-    setCurrent(0);
+    clearMsg();
+    hintLine.textContent = "Hints cost points and reset streak.";
+
+    STATE.remaining = pickRound(STATE.level);
+    renderList();
+    setCurrent();
 
     buildTower(STATE.level);
     startTimer();
 
-    // a touch more top-down as level increases (looks like “progression”)
+    // slightly more top-down as levels rise (progression feel)
     const t = (STATE.level-1)/9;
-    phi = Math.max(phiMin, Math.min(phiMax, (Math.PI*0.32) - t*0.03));
-    radius = Math.max(radMin, Math.min(radMax, 26 - t*4));
+    phi = Math.max(phiMin, Math.min(phiMax, Math.PI*0.26 + t*0.06));
+    radius = Math.max(radMin, Math.min(radMax, 25 - t*3));
   }
 
   function shuffleTower(){
@@ -1072,7 +1212,22 @@
     setTimeout(clearMsg, 900);
   }
 
-  // ---------- Setup ----------
+  // --------- Buttons ----------
+  btnNew.addEventListener("click", newRound);
+  btnScores.addEventListener("click", showScores);
+  btnSubmit.addEventListener("click", submit);
+  btnHint.addEventListener("click", useHint);
+  btnShuffle.addEventListener("click", shuffleTower);
+  btnClear.addEventListener("click", ()=>{ clearSelection(); clearMsg(); });
+  btnUndo.addEventListener("click", undoOne);
+  btnSpace.addEventListener("click", ()=> addChar(" "));
+
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){ e.preventDefault(); submit(); }
+    if(e.key === "Escape"){ clearSelection(); }
+  });
+
+  // --------- Setup ----------
   for(let i=1;i<=10;i++){
     const opt = document.createElement("option");
     opt.value = String(i);
@@ -1080,28 +1235,23 @@
     levelSel.appendChild(opt);
   }
   levelSel.value = "1";
+  levelBadge.textContent = "1";
+  applyLevelBackground(1);
 
-  btnNew.addEventListener("click", newRound);
-  btnScores.addEventListener("click", showScores);
-  btnSubmit.addEventListener("click", submit);
-  btnClear.addEventListener("click", ()=>{ clearSelection(); clearMsg(); });
-  btnShuffle.addEventListener("click", shuffleTower);
-  btnHint.addEventListener("click", useHint);
-
-  window.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter"){ e.preventDefault(); submit(); }
-    if(e.key === "Backspace"){ clearSelection(); }
-  });
+  function updateHUD(){
+    // called via timer
+  }
 
   // initial
-  resize();
-  applyLevelBackground(1);
-  levelBadge.textContent = "1";
-  buildTower(1);
-  promptEl.textContent = "Click New Round to begin!";
-  renderRoundList();
-  updateCamera();
-  animate();
+  function init(){
+    resize();
+    buildTower(1);
+    promptEl.textContent = "Click New Round to begin!";
+    leftEl.textContent = "0";
+    updateCamera();
+    animate();
+  }
+  init();
 </script>
 </body>
 </html>
